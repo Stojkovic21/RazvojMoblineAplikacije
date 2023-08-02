@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">KulturniSpomenici</string>
+    <string name="usermame">Usermame</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="email">Email</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="username">Username</string>
+    <string name="ime">Ime</string>
+    <string name="prezime">Prezime</string>
+    <string name="broj_telefona">Broj telefona</string>
+    <string name="datum_rodjenja">Datum rodjenja</string>
+    <string name="marginTop">50</string>
+</resources>

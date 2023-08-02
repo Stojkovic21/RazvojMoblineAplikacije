@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "699419518835",
+    "project_id": "kulturnispomenici",
+    "storage_bucket": "kulturnispomenici.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:699419518835:android:17d8f0386890ce610dc706",
+        "android_client_info": {
+          "package_name": "com.example.kulturnispomenici"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "699419518835-m3arm02hv5imbnupina0gvecgqjlumfp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIbwr1_619QNvhBcaW-sLvqU3y2J70-3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "699419518835-m3arm02hv5imbnupina0gvecgqjlumfp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
