@@ -1,6 +1,7 @@
-package com.example.kulturnispomenici
+package com.example.kulturnispomenici.Activitys
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -8,6 +9,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.DatePicker
 import android.widget.Toast
+import com.example.kulturnispomenici.Classes.User
 import com.example.kulturnispomenici.databinding.ActivitySignupBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
@@ -45,58 +47,55 @@ class SignupActivity : AppCompatActivity() {
 
             var bul:Boolean=true;
         binding.btnSignup.setOnClickListener {
-
-            if(bul) {
-                    bul=false;
-                if (binding.tiConfirmPassword.text==binding.tiPassword.text) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiConfirmPassword.error = "Sifre moraju biti iste";
-                    binding.tiConfirmPassword.requestFocus();
-                    bul=true;
-                }
-                if (TextUtils.isEmpty(binding.tiPassword.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiPassword.error = "Morate uneti "+binding.tiPassword.hint.toString();
-                    binding.tiPassword.requestFocus();
-                    bul=true;
-                }
-                if (TextUtils.isEmpty(binding.tiUsername.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiUsername.error = "Morate uneti "+binding.tiUsername.hint.toString();
-                    binding.tiUsername.requestFocus();
-                    bul=true;
-                }
-                if (TextUtils.isEmpty(binding.tiDatumRodjenja.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiDatumRodjenja.error = "Morate uneti "+binding.tiDatumRodjenja.hint.toString();
-                    binding.tiDatumRodjenja.requestFocus();
-                    bul=true;
-                }
-                if (TextUtils.isEmpty(binding.tiBrojTelefona.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiBrojTelefona.error = "Morate uneti "+binding.tiBrojTelefona.hint.toString();
-                    binding.tiBrojTelefona.requestFocus();
-                    bul=true;
-                }
-                if (!Patterns.EMAIL_ADDRESS.matcher(binding.tiEmail.text).matches()) {
-                    binding.tiEmail.error = "Morate uneti validnu email adresi";
-                    binding.tiEmail.requestFocus();
-                    bul=true;
-                }
-                if (TextUtils.isEmpty(binding.tiPrezime.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiPrezime.error = "Morate uneti "+binding.tiPrezime.hint.toString();
-                    binding.tiPrezime.requestFocus();
-                    bul=true;
-                }
-                if (TextUtils.isEmpty(binding.tiIme.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
-                    binding.tiIme.error = "Morate uneti "+binding.tiIme.hint.toString();
-                    binding.tiIme.requestFocus();
-                    bul=true
-                }
+            bul=false;
+            if (binding.tiConfirmPassword.text==binding.tiPassword.text) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiConfirmPassword.error = "Sifre moraju biti iste";
+                binding.tiConfirmPassword.requestFocus();
+                bul=true;
             }
-            else{
+            if (TextUtils.isEmpty(binding.tiPassword.text)) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiPassword.error = "Morate uneti "+binding.tiPassword.hint.toString();
+                binding.tiPassword.requestFocus();
+                bul=true;
+            }
+            if (TextUtils.isEmpty(binding.tiUsername.text)) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiUsername.error = "Morate uneti "+binding.tiUsername.hint.toString();
+                binding.tiUsername.requestFocus();
+                bul=true;
+            }
+            if (TextUtils.isEmpty(binding.tiDatumRodjenja.text)) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiDatumRodjenja.error = "Morate uneti "+binding.tiDatumRodjenja.hint.toString();
+                binding.tiDatumRodjenja.requestFocus();
+                bul=true;
+            }
+            if (TextUtils.isEmpty(binding.tiBrojTelefona.text)) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiBrojTelefona.error = "Morate uneti "+binding.tiBrojTelefona.hint.toString();
+                binding.tiBrojTelefona.requestFocus();
+                bul=true;
+            }
+            if (!Patterns.EMAIL_ADDRESS.matcher(binding.tiEmail.text).matches()) {
+                binding.tiEmail.error = "Morate uneti validnu email adresi";
+                binding.tiEmail.requestFocus();
+                bul=true;
+            }
+            if (TextUtils.isEmpty(binding.tiPrezime.text)) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiPrezime.error = "Morate uneti "+binding.tiPrezime.hint.toString();
+                binding.tiPrezime.requestFocus();
+                bul=true;
+            }
+            if (TextUtils.isEmpty(binding.tiIme.text)) {
+                //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+                binding.tiIme.error = "Morate uneti "+binding.tiIme.hint.toString();
+                binding.tiIme.requestFocus();
+                bul=true
+            }
+            if(!bul) {
                 bul=false;
                 binding.ProgressBar.visibility = View.VISIBLE;
                 registerUser(binding.tiIme.text.toString(),binding.tiPrezime.text.toString(),binding.tiEmail.text.toString(),binding.tiBrojTelefona.text.toString()
@@ -105,35 +104,30 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerUser(ime: String, prezime: String, email: String, brTel: String, datRodj: String, username: String, password: String) {
-
+    private fun registerUser(ime: String, prezime: String, email: String, brTel: String, datRodj: String, username: String, password: String){
         firebaseAuth=FirebaseAuth.getInstance();
         referenceProfile=FirebaseDatabase.getInstance().getReference("Registrovan korisnik");
 
         firebaseAuth.createUserWithEmailAndPassword(binding.tiEmail.text.toString(),binding.tiPassword.text.toString())
             .addOnCompleteListener(this, OnCompleteListener<AuthResult?> { task ->
-                if (task.isSuccessful) {
-
+                if (task.isSuccessful){
                     Toast.makeText(this,"Created success",Toast.LENGTH_SHORT).show();
                     firebaseUser= firebaseAuth.currentUser!!;
                     writeUser= User(binding.tiIme.text.toString(),binding.tiPrezime.text.toString(),binding.tiUsername.text.toString(),binding.tiDatumRodjenja.text.toString(),
                         binding.tiBrojTelefona.text.toString());
 
                     referenceProfile.child(firebaseUser.uid).setValue(writeUser).addOnCompleteListener(this, OnCompleteListener<Void> { Task->
-                        if(task.isSuccessful)
-                        {
+                        if(task.isSuccessful){
                             firebaseUser.sendEmailVerification();
 
-//                          val intetnt= Intent(this,UserProfile::class.java)
-//                          startActivity(intent);
+                            startActivity(Intent(this, UserProfileActivity::class.java));
                             finish()
-                        }else {
+                        }else{
                             Toast.makeText(this,"Fail to create acc",Toast.LENGTH_SHORT).show();
                             binding.ProgressBar.visibility = View.GONE;
                         }
                     })
-
-                } else {
+                } else{
                     Toast.makeText(this,"Fail to create acc",Toast.LENGTH_SHORT).show();
                     binding.ProgressBar.visibility = View.GONE;
                 }

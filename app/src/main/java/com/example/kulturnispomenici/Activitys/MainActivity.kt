@@ -1,9 +1,8 @@
-package com.example.kulturnispomenici
+package com.example.kulturnispomenici.Activitys
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
 import com.example.kulturnispomenici.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -16,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root);
 
         binding.btnSignup.setOnClickListener{
-            val intent= Intent(this,SignupActivity::class.java);
+            val intent= Intent(this, SignupActivity::class.java);
             startActivity(intent);
         }
 
