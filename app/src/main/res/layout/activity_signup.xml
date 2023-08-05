@@ -29,7 +29,7 @@
             android:id="@+id/tiIme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/ime" />
+            android:hint="@string/name" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -42,7 +42,7 @@
             android:id="@+id/tiPrezime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/prezime" />
+            android:hint="@string/lastName" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:hint="@string/broj_telefona" />
+            android:hint="@string/phone" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:inputType="date"
             android:focusable="false"
-            android:hint="@string/datum_rodjenja" />
+            android:hint="@string/dateOfBirth" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

@@ -22,10 +22,16 @@
         android:theme="@style/Theme.KulturniSpomenici"
         tools:targetApi="31">
         <activity
-            android:name=".Activitys.ForgotPasswordActivity"
-            android:exported="false" />
+            android:name=".Activitys.EditProfileActivity"
+            android:exported="false"
+            android:parentActivityName=".Activitys.UserProfileActivity"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activitys.UserProfileActivity" />
+        </activity>
         <activity
-            android:name=".Activitys.MainActivity2"
+            android:name=".Activitys.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".Activitys.UserProfileActivity"

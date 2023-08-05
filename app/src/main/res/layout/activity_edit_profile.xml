@@ -18,7 +18,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -38,22 +38,23 @@
                 android:background="@color/purple_700">
 
                 <ImageView
-                    android:id="@+id/ProfilePicture"
+                    android:id="@+id/UploadProfilePicture"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_centerInParent="true"
                     android:background="@drawable/no_profile_picture" />
 
                 <TextView
-                    android:id="@+id/txtEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/ProfilePicture"
+                    android:id="@+id/txtEditProfilePicture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/UploadProfilePicture"
                     android:layout_centerInParent="true"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="27dp"
                     android:gravity="center"
-                    android:hint="@string/email"
-                    android:textSize="25sp" />
+                    android:text="@string/edit_profile_picture"
+                    android:textColor="@color/linkBlue"
+                    android:textSize="15sp" />
 
 
             </RelativeLayout>
@@ -62,7 +63,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="15dp"
-                android:padding="15dp">
+                android:padding="15dp"
+                >
 
                 <ImageView
                     android:id="@+id/smallUserImage"
@@ -79,12 +81,14 @@
                     android:layout_marginStart="50dp"
                     android:hint="@string/full_name" />
 
-                <View
+                <EditText
+                    android:id="@+id/etName"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/Name"
-                    android:layout_marginTop="20dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_marginStart="50dp"
+                    android:minHeight="48dp"
+                    android:hint="@string/full_name"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -117,12 +121,15 @@
                     android:layout_marginStart="50dp"
                     android:hint="@string/username" />
 
-                <View
+                <EditText
+                    android:id="@+id/etUsername"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/Username"
                     android:layout_marginTop="20dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_marginStart="50dp"
+                    android:minHeight="48dp"
+                    android:hint="@string/username"/>
 
             </RelativeLayout>
 
@@ -147,12 +154,15 @@
                     android:layout_marginStart="50dp"
                     android:hint="@string/phone" />
 
-                <View
+                <EditText
+                    android:id="@+id/etPhone"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/Phone"
                     android:layout_marginTop="20dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_marginStart="50dp"
+                    android:minHeight="48dp"
+                    android:hint="@string/phone"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -174,14 +184,18 @@
                     android:layout_height="match_parent"
                     android:layout_alignStart="@id/smallDateImageee"
                     android:layout_marginStart="50dp"
-                    android:hint="@string/date" />
+                    android:focusable="false"
+                    android:hint="@string/dateOfBirth" />
 
-                <View
+                <EditText
+                    android:id="@+id/etDateOB"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/Date"
                     android:layout_marginTop="20dp"
-                    android:background="@android:color/darker_gray" />
+                    android:layout_marginStart="50dp"
+                    android:minHeight="48dp"
+                    android:hint="@string/dateOfBirth"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
