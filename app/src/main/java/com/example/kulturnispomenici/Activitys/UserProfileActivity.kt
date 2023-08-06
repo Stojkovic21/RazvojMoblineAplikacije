@@ -58,6 +58,7 @@ class UserProfileActivity : AppCompatActivity() {
         } else {
             progressBar.visibility = View.VISIBLE;
             showUserProfile(firebaseUser);
+            txtDate.text="aaaaa"
         }
     }
     @SuppressLint("SetTextI18n")
@@ -100,13 +101,22 @@ class UserProfileActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId)
         {
-            R.id.EditProfile -> {startActivity(Intent(this,EditProfileActivity::class.java))}
-            R.id.ChangePassword -> {}
-            R.id.ChangeEmail -> {}
-            R.id.Delete -> {}
+            R.id.EditProfile -> {startActivity(Intent(this,EditProfileActivity::class.java))
+            finish()
+            }
+            R.id.ChangePassword -> {startActivity(Intent(this,ChangePasswordActivity::class.java))
+            finish()
+            }
+            R.id.ChangeEmail -> {startActivity(Intent(this,ChangeEmailActivity::class.java))
+            finish()
+            }
+            R.id.Delete -> {startActivity(Intent(this,DeleteProfileActivity::class.java))
+            finish()
+            }
             R.id.SignOut -> {
                 firebaseAuth.signOut()
                 startActivity(Intent(this, LoginActivity::class.java))
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

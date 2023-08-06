@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -17,6 +18,7 @@ import android.widget.Toast
 import com.example.kulturnispomenici.Classes.User
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityEditProfileBinding
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -30,7 +32,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
-import java.util.Calendar
 
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
@@ -66,12 +67,12 @@ class EditProfileActivity : AppCompatActivity() {
         showProfile(firebaseUser)
 
         binding.etDateOB.setOnClickListener{
-            val calendar: Calendar = Calendar.getInstance();
-            val day=calendar.get(Calendar.DAY_OF_MONTH);
-            val month=calendar.get(Calendar.MONTH);
-            val year=calendar.get(Calendar.YEAR);
+            val textToSplit=etDateOB.text.toString().split("/")
+            val day= textToSplit[0].toInt()
+            val month=textToSplit[1].toInt()
+            val year=textToSplit[2].toInt()
 
-            DatePickerDialog(this, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
+            DatePickerDialog(this,DatePickerDialog.OnDateSetListener{view, year, month, dayOfMonth ->
                 binding.etDateOB.setText("$dayOfMonth/"+ (month+1)+"/$year");
             },year,month,day).show()
         }
@@ -100,12 +101,14 @@ class EditProfileActivity : AppCompatActivity() {
 
                 }
                 progressBar.visibility=View.GONE
+
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
         })
+
     }
 
     private fun openFileChooser()
@@ -124,7 +127,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.edit_profile,menu)
+        menuInflater.inflate(R.menu.edit_profile_manu,menu)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -133,11 +136,64 @@ class EditProfileActivity : AppCompatActivity() {
         {
             R.id.Save->{
                 uploadPhoto()
-                Toast.makeText(this,"Changes succeed",Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this,UserProfileActivity::class.java));
+                if(updateProfile(firebaseUser)) {
+                    Toast.makeText(this, "Changes succeed", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this, UserProfileActivity::class.java));
+                }
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateProfile(firebaseUser: FirebaseUser):Boolean {
+        val imeIPrezime=etName.text.split(" ")
+        val ime=imeIPrezime[0]
+        val prezime=imeIPrezime[1]
+        var bul=false;
+
+        if (TextUtils.isEmpty(etUsername.text)) {
+            //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+            etUsername.error = "Morate uneti "+etUsername.hint.toString();
+            etUsername.requestFocus();
+            bul=true;
+        }
+        if (TextUtils.isEmpty(etDateOB.text)) {
+            //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+            etDateOB.error = "Morate uneti "+etDateOB.hint.toString();
+            etDateOB.requestFocus();
+            bul=true;
+        }
+        if (TextUtils.isEmpty(etPhone.text)) {
+            //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+            etPhone.error = "Morate uneti "+etPhone.hint.toString();
+            etPhone.requestFocus();
+            bul=true;
+        }
+        if (TextUtils.isEmpty(ime) || TextUtils.isEmpty(prezime)) {
+            //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
+            etName.error = "Morate uneti ime i prezime"
+            etName.requestFocus();
+            bul=true;
+        }
+        if(!bul) {
+            progressBar.visibility = View.VISIBLE;
+            val writeUser=User(ime,prezime, etUsername.text.toString(),etDateOB.text.toString(),etPhone.text.toString())
+
+            val databaseReference=FirebaseDatabase.getInstance().getReference(("Registrovan korisnik"))
+            val userId=firebaseUser.uid
+            databaseReference.child(firebaseUser.uid).setValue(writeUser).addOnCompleteListener(this, OnCompleteListener<Void> { task->
+                if(task.isSuccessful){
+                    startActivity(Intent(this, UserProfileActivity::class.java));
+                    finish()
+                }else{
+                    Toast.makeText(this,"Fail to create acc",Toast.LENGTH_SHORT).show();
+                    progressBar.visibility = View.GONE;
+                }
+            })
+            progressBar.visibility=View.GONE
+            return true
+        }
+        return false
     }
 
     private fun uploadPhoto() {

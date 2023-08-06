@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
+import android.view.Menu
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityForgotPasswordBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +26,10 @@ class ForgotPasswordActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater);
         setContentView(binding.root)
-        actionBar?.title="Forgot password"
+
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title="Forgot password"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         confirmingEmail=binding.tiEmail;
         progressBar=binding.ProgressBar;
@@ -37,7 +42,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     progressBar.visibility=View.VISIBLE
                     restartPassword(email)
                 }else{
-                    confirmingEmail.error="Unesite validnu email adresu"                }
+                    confirmingEmail.error="Unesite validnu email adresu"}
             }else{
                 confirmingEmail.error="Nedostaje email"
             }
@@ -49,9 +54,14 @@ class ForgotPasswordActivity : AppCompatActivity() {
         firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(OnCompleteListener<Void>{
             if(it.isSuccessful){
                 Toast.makeText(this,"Zahtev za promenu lozinke je poslat na vas mail",Toast.LENGTH_SHORT)
-                startActivity(Intent(this,ForgotPasswordActivity::class.java))
+                startActivity(Intent(this,LoginActivity::class.java))
             }
         })
         progressBar.visibility=View.GONE
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.empty_manu,menu)
+        return super.onCreateOptionsMenu(menu)
     }
 }

@@ -15,4 +15,5 @@
     <string name="edit_profile_picture">Edit profile picture</string>
     <string name="full_name">Full name</string>
     <string name="date">Date</string>
+    <string name="potvrdi_lozinku">Kako bi ste obrisali profil morate prvo potvrditi vasu lozinku</string>
 </resources>

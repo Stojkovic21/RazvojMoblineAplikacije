@@ -117,7 +117,7 @@ class SignupActivity : AppCompatActivity() {
                         binding.tiBrojTelefona.text.toString());
 
                     referenceProfile.child(firebaseUser.uid).setValue(writeUser).addOnCompleteListener(this, OnCompleteListener<Void> { Task->
-                        if(task.isSuccessful){
+                        if(Task.isSuccessful){
                             firebaseUser.sendEmailVerification();
 
                             startActivity(Intent(this, UserProfileActivity::class.java));
