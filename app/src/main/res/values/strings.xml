@@ -16,4 +16,6 @@
     <string name="full_name">Full name</string>
     <string name="date">Date</string>
     <string name="potvrdi_lozinku">Kako bi ste obrisali profil morate prvo potvrditi vasu lozinku</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

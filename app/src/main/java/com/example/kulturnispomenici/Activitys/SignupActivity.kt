@@ -9,7 +9,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.DatePicker
 import android.widget.Toast
-import com.example.kulturnispomenici.Classes.User
+import com.example.kulturnispomenici.Data.User
 import com.example.kulturnispomenici.databinding.ActivitySignupBinding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult

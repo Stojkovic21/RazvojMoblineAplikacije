@@ -20,4 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepclassmembers class com.example.kulturnispomenici.Classes.User{public<init>();}
+-keepclassmembers class com.example.kulturnispomenici.Data.User{public<init>();}

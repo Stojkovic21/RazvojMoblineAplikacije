@@ -8,6 +8,7 @@ import android.util.Patterns
 import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import com.example.kulturnispomenici.Fragments.MapFragment
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -54,8 +55,9 @@ class LoginActivity : AppCompatActivity(){
         firebaseAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(this){ task->
                 if(task.isSuccessful){
                     Toast.makeText(this,"login success",Toast.LENGTH_SHORT).show();
-                    val intent=Intent(this, UserProfileActivity::class.java)
-                    startActivity(intent);
+                    val fragment=MapFragment()
+//                    supportFragmentManager.beginTransaction().add(R.id.FragmentFrame,MapFragment(),"Map").commit()
+                    startActivity(Intent(this, MapActivity::class.java));
                     finish();
                 }
                 else{
@@ -68,8 +70,7 @@ class LoginActivity : AppCompatActivity(){
     override fun onStart() {
         super.onStart()
         if (firebaseAuth.currentUser!=null){
-            startActivity(Intent(this, UserProfileActivity::class.java))
-            finish()
+            startActivity(Intent(this, MapActivity::class.java));
         }
     }
 }

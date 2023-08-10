@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mapFragment">
+
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.kulturnispomenici.Fragments.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_listaDestinacijaFragment"
+            app:destination="@id/listaDestinacijaFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_addNewLocationFragment"
+            app:destination="@id/addNewLocationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listaDestinacijaFragment"
+        android:name="com.example.kulturnispomenici.Fragments.ListaDestinacijaFragment"
+        android:label="fragment_lista_destinacija"
+        tools:layout="@layout/fragment_lista_destinacija" >
+        <action
+            android:id="@+id/action_listaDestinacijaFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNewLocationFragment"
+        android:name="com.example.kulturnispomenici.Fragments.AddNewLocationFragment"
+        android:label="fragment_add_new_location"
+        tools:layout="@layout/fragment_add_new_location" >
+        <action
+            android:id="@+id/action_addNewLocationFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+
+</navigation>

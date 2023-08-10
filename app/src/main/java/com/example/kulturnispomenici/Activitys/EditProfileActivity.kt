@@ -15,7 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
-import com.example.kulturnispomenici.Classes.User
+import com.example.kulturnispomenici.Data.User
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityEditProfileBinding
 import com.google.android.gms.tasks.OnCompleteListener

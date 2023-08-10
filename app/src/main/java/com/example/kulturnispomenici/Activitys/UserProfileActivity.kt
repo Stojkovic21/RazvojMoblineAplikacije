@@ -13,15 +13,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.example.kulturnispomenici.R
-import com.example.kulturnispomenici.Classes.User
+import com.example.kulturnispomenici.Data.User
 import com.example.kulturnispomenici.databinding.ActivityUserProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import java.io.File
 
 class UserProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserProfileBinding
@@ -42,6 +40,7 @@ class UserProfileActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         supportActionBar?.title="User profile"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         txtName = binding.Name
         txtPhone = binding.Phone
