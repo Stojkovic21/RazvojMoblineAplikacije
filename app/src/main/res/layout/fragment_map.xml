@@ -28,4 +28,16 @@
         android:layout_height="30dp"
         android:background="@drawable/outline_add_circle_outline_black_24dp"
         android:layout_below="@id/imgMyLocation"/>
+    <ImageView
+        android:id="@+id/imgShowList"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/list_icon"
+        android:layout_below="@id/imgPlacesList"/>
+    <ImageView
+        android:id="@+id/imgShowAll"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/show_all"
+        android:layout_below="@id/imgShowList"/>
 </RelativeLayout>
