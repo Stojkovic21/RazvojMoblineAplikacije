@@ -1,21 +1,26 @@
 package com.example.kulturnispomenici.Model
 
-import android.graphics.drawable.Drawable
+import android.content.ContentValues.TAG
+import android.location.Location
+import android.util.Log
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.ViewModel
 import com.example.kulturnispomenici.Data.myPlace
-import com.example.kulturnispomenici.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import org.osmdroid.views.MapView
+import java.lang.Math.atan2
+import java.lang.Math.cos
+import java.lang.Math.sin
+import java.lang.Math.sqrt
 
 class MyPlacesViewModel:ViewModel() {
-    var myPlacesList:ArrayList<myPlace> = ArrayList<myPlace>()
+    var myPlacesList:ArrayList<myPlace> = ArrayList()
     fun addPlace(myPlace: myPlace){
         myPlacesList.add(myPlace)
     }
@@ -51,7 +56,7 @@ class MyPlacesViewModel:ViewModel() {
             place.addMarker(map,tvTitel,tvOpis,imgPicture,bottomManu)
         }
     }
-    fun filerPlaces(filer:String):MyPlacesViewModel{
+    fun filterPlaces(filer:String):MyPlacesViewModel{
         var filtrirano:MyPlacesViewModel= MyPlacesViewModel()
         for (place in myPlacesList){
             if(place.title.toString().contains(filer)){
@@ -59,6 +64,28 @@ class MyPlacesViewModel:ViewModel() {
             }
         }
         return filtrirano
+    }
+    fun filterPlaces(currentLocation:Location, radius:Double):List<myPlace>{
+        val filter=myPlacesList.filter { place->
+
+            getDistance(currentLocation.latitude,currentLocation.longitude,place.latitude,place.longitude)<radius
+        }
+        return filter
+    }
+    private fun getDistance(currentLat: Double, currentLon: Double, strayLat: Double, strayLon: Double): Double {
+        val earthRadius = 6371000.0
+
+        val currentLatRad = Math.toRadians(currentLat)
+        val strayLatRad = Math.toRadians(strayLat)
+        val deltaLat = Math.toRadians(strayLat - currentLat)
+        val deltaLon = Math.toRadians(strayLon - currentLon)
+
+        val a = sin(deltaLat / 2) * sin(deltaLat / 2) +
+                cos(currentLatRad) * cos(strayLatRad) *
+                sin(deltaLon / 2) * sin(deltaLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadius * c
     }
     fun getItemOnPostion(position:Int):myPlace{
         return myPlacesList[position]

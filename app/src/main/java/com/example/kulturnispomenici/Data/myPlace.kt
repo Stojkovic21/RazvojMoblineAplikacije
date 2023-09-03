@@ -1,13 +1,10 @@
 package com.example.kulturnispomenici.Data
 
 import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import com.google.firebase.storage.FirebaseStorage
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -38,7 +35,7 @@ data class myPlace(
         tvTitel: TextView,
         tvOpis: TextView,
         imgPicture: ImageView,
-        bottomManu: FrameLayout
+        bottomManu: FrameLayout,
     ) {
         val marker: Marker = Marker(map)
         val curLocarion: GeoPoint = GeoPoint(latitude, longitude)
@@ -60,8 +57,10 @@ data class myPlace(
                 if (imgPicture != null) {
                     imgPicture.setImageBitmap(bitmap)
                 }
-                    bottomManu.visibility=View.VISIBLE
         }
+                    bottomManu.visibility=View.VISIBLE
+                map.controller.setZoom(15.0)
+                map.controller.setCenter(GeoPoint(latitude,longitude));
                 return true
             }
         })

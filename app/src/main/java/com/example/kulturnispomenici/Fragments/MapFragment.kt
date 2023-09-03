@@ -7,19 +7,13 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -30,7 +24,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.kulturnispomenici.Activitys.UserProfileActivity
-import com.example.kulturnispomenici.Data.myPlace
 import com.example.kulturnispomenici.Model.MyPlacesViewModel
 import com.example.kulturnispomenici.R
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -41,12 +34,10 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.firebase.storage.FirebaseStorage
 import org.osmdroid.config.Configuration
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import java.io.File
 
 @Suppress("DEPRECATION")
 class MapFragment : Fragment() {
@@ -99,16 +90,15 @@ class MapFragment : Fragment() {
         return view
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint("UseCompatLoadingForDrawables", "SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         currentLocation=Location("trLokacija")
 
-        val tvTitel=view.findViewById<TextView>(R.id.tvTitel)
+        val tvTitel=view.findViewById<TextView>(R.id.tvTitle)
         val tvOpis=view.findViewById<TextView>(R.id.tvOpis)
         val imgPicture=view.findViewById<ImageView>(R.id.imgPicture)
-
         map=view.findViewById<MapView>(R.id.map)
         map.setMultiTouchControls(true)
 //        val myToolbar:Toolbar=requireActivity().findViewById(R.id.toolbar)
@@ -118,6 +108,7 @@ class MapFragment : Fragment() {
         val dialog:Dialog=Dialog(requireActivity())
         val markerIcon=getResources().getDrawable(org.osmdroid.library.R.drawable.marker_default)
         bottomManu=view.findViewById(R.id.BottomManu)
+        bottomManu.visibility=View.GONE
         imgProfile= view.findViewById(R.id.imgProfile)!!
         imgProfile.setOnClickListener{
             startActivity(Intent(activity,UserProfileActivity::class.java))
@@ -159,15 +150,21 @@ class MapFragment : Fragment() {
         imgShowAll=view.findViewById(R.id.imgShowAll)
         imgShowAll.setOnClickListener {
             myPlacesViewModel.addMarker(map,tvTitel,tvOpis,imgPicture,bottomManu)
+            map.controller.setZoom(4.0)
         }
         etSearchLocation=view.findViewById(R.id.etSearchLocation)
         imgSearchLocation=view.findViewById(R.id.imgSearchLocation)
         imgSearchLocation.setOnClickListener {
-            map.overlays.clear()
-            val filtered=myPlacesViewModel.filerPlaces(etSearchLocation.text.toString())
+            if(etSearchLocation.text.toString().toDoubleOrNull()!=null){
+                val filtered = myPlacesViewModel.filterPlaces(currentLocation,etSearchLocation.text.toString().toDouble())
+                for (item in filtered){
+                    item.addMarker(map,tvTitel,tvOpis,imgPicture,bottomManu)
+                }
+            }
+            else {
+                val filtered = myPlacesViewModel.filterPlaces(etSearchLocation.text.toString())
                 filtered.addMarker(map,tvTitel,tvOpis,imgPicture,bottomManu)
-            bottomManu.visibility=View.VISIBLE
-            //updateInfoInBottomManu(filtered.myPlacesList[0])
+            }
         }
 
         //val btn=map.findViewById<Button>(org.osmdroid.bonuspack.R.id.bubble_moreinfo)
@@ -184,9 +181,10 @@ class MapFragment : Fragment() {
         }
 
         BottomSheetBehavior.from(bottomManu).apply {
-            peekHeight=200
+            peekHeight=100
             this.state=BottomSheetBehavior.STATE_COLLAPSED
         }
+
     }
 
     private fun startLocatioUpdating() {
@@ -242,7 +240,6 @@ class MapFragment : Fragment() {
         Log.d(TAG,"moveCamera: Lat: "+location.latitude+", Lng: "+location.longitude)
         map.controller.setCenter(GeoPoint(location.latitude,location.longitude))
         map.controller.setZoom(zoom)
-
     }
 
     private fun getLocationPermision()

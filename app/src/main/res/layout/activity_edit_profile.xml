@@ -120,7 +120,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignStart="@id/smallUsernameImage"
                     android:layout_marginStart="50dp"
-                    android:hint="@string/username"
+                    android:text="@string/username"
                     android:textColor="@color/black"/>
 
                 <EditText
@@ -155,7 +155,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignStart="@id/smallPhoneImage"
                     android:layout_marginStart="50dp"
-                    android:hint="@string/phone"
+                    android:text="@string/phone"
                     android:textColor="@color/black"/>
 
                 <EditText
@@ -190,7 +190,7 @@
                     android:layout_alignStart="@id/smallDateImageee"
                     android:layout_marginStart="50dp"
                     android:focusable="false"
-                    android:hint="@string/dateOfBirth"
+                    android:text="@string/dateOfBirth"
                     android:textColor="@color/black"/>
 
                 <EditText

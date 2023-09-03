@@ -1,17 +1,21 @@
 package com.example.kulturnispomenici.Activitys
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Patterns
-import android.view.Menu
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.kulturnispomenici.Data.User
 import com.example.kulturnispomenici.Fragments.MapFragment
-import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity(){
     private lateinit var binding: ActivityLoginBinding;
@@ -30,7 +34,6 @@ class LoginActivity : AppCompatActivity(){
         binding.btnLogin.setOnClickListener{
                 bul=false;
                 if (TextUtils.isEmpty(binding.tiPassword.text)) {
-                    //Toast.makeText(this, "Morate uneti ime", Toast.LENGTH_SHORT).show();
                     binding.tiPassword.error = "Morate uneti " + binding.tiPassword.hint.toString();
                     binding.tiPassword.requestFocus();
                     bul = true;
@@ -42,6 +45,7 @@ class LoginActivity : AppCompatActivity(){
                 }
             if (!bul) {
                 binding.ProgressBar.visibility= View.VISIBLE;
+
                 loginUser(binding.tiEmail.text.toString(),binding.tiPassword.text.toString());
             }
         }

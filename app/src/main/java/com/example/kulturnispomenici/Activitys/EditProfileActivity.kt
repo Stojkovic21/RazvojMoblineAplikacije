@@ -3,6 +3,7 @@ package com.example.kulturnispomenici.Activitys
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ContentResolver
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -10,10 +11,10 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,8 +23,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.example.kulturnispomenici.Data.User
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityEditProfileBinding
@@ -40,9 +43,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import com.squareup.picasso.Picasso
 import java.io.File
 
+@Suppress("DEPRECATION")
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
     private lateinit var progressBar: ProgressBar
@@ -53,6 +56,7 @@ class EditProfileActivity : AppCompatActivity() {
     private final var PICK_IMAGE_REQUEST=1
     private lateinit var uriImage:Uri
     private lateinit var bitMap:Bitmap
+    private final val CAMERA_REQUEST_CODE=2
     private lateinit var etName:EditText;private lateinit var etUsername:EditText;private lateinit var etPhone:EditText;private lateinit var etDateOB:EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +104,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         binding.txtEditProfilePicture.setOnClickListener {view->
             openFileChooser()
+            //cameraPermission()
         }
     }
 
@@ -124,11 +129,26 @@ class EditProfileActivity : AppCompatActivity() {
             }
         })
     }
+    private fun createUri():Uri{
+        var imageFile=File(applicationContext.filesDir,"camera_photo.jpg")
 
+        return FileProvider.getUriForFile(
+            applicationContext,"com.example.camerapermission.fileProvider",imageFile
+        )
+    }
+    private fun cameraPermission(){
+        if (ActivityCompat.checkSelfPermission(this,android.Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA),CAMERA_REQUEST_CODE)
+        }
+        else{
+            val intent=Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent,CAMERA_REQUEST_CODE)
+        }
+    }
     private fun openFileChooser()
     {
         if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1)
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),CAMERA_REQUEST_CODE)
         }
         else{
             var intent: Intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -145,6 +165,11 @@ class EditProfileActivity : AppCompatActivity() {
                 bitMap= ImageDecoder.decodeBitmap(source)
                 uploadPicture.setImageBitmap(bitMap)
             }
+        }else if (requestCode==CAMERA_REQUEST_CODE&&resultCode==Activity.RESULT_OK){
+            val CbitMap:Bitmap= data?.extras?.get("data") as Bitmap
+            uploadPicture.setImageBitmap(CbitMap)
+        }else{
+            Toast.makeText(this,"Something gone wrong",Toast.LENGTH_SHORT).show()
         }
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -167,6 +192,7 @@ class EditProfileActivity : AppCompatActivity() {
         {
             R.id.Save->{
                 progressBar.visibility=View.VISIBLE
+                Log.d(TAG, "uploadPhoto Uri: "+uriImage)
                 uploadPhoto()
                 if(updateProfile(firebaseUser)) {
                     Toast.makeText(this, "Changes succeed", Toast.LENGTH_SHORT).show()
@@ -210,7 +236,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
         if(!bul) {
             progressBar.visibility = View.VISIBLE;
-            val writeUser=User(ime,prezime, etUsername.text.toString(),etDateOB.text.toString(),etPhone.text.toString())
+            val writeUser=User(ime,prezime ,etUsername.text.toString(),etDateOB.text.toString(),etPhone.text.toString())
 
             val databaseReference=FirebaseDatabase.getInstance().getReference(("Registrovan korisnik"))
             val userId=firebaseUser.uid
@@ -233,7 +259,7 @@ class EditProfileActivity : AppCompatActivity() {
         storageReference=FirebaseStorage.getInstance().getReference("ProfilePictureStorage")
 
         val fileReference : StorageReference=storageReference.child(firebaseAuth.currentUser?.uid.toString() + "."+getFileExtension(uriImage))
-
+        Log.d(TAG, "uploadPhoto Uri: "+uriImage)
         fileReference.putFile(uriImage).addOnSuccessListener(OnSuccessListener<UploadTask.TaskSnapshot> {
             fileReference.downloadUrl.addOnSuccessListener(OnSuccessListener<Uri>{
                 val downloadUri:Uri=uriImage
@@ -242,7 +268,6 @@ class EditProfileActivity : AppCompatActivity() {
                 val profileUpdates: UserProfileChangeRequest =UserProfileChangeRequest.Builder().setPhotoUri(downloadUri).build()
                 firebaseUser.updateProfile(profileUpdates)
             })
-
         })
     }
 

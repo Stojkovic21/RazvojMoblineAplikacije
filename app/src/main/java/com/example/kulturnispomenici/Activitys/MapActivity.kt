@@ -1,24 +1,13 @@
 package com.example.kulturnispomenici.Activitys
 
-import android.content.ContentValues.TAG
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
-import android.widget.EditText
-import androidx.fragment.app.activityViewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.kulturnispomenici.Model.MyPlacesViewModel
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityMapBinding
-import com.google.android.material.snackbar.Snackbar
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.Marker
-import androidx.fragment.app.activityViewModels
 
 class MapActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration

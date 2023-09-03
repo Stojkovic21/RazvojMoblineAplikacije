@@ -54,7 +54,7 @@ class UserProfileActivity : AppCompatActivity() {
         profilePicture=binding.ProfilePicture
 
         firebaseAuth = FirebaseAuth.getInstance()
-        var firebaseUser = firebaseAuth.currentUser
+        val firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
             Toast.makeText(this, "Users details are not available", Toast.LENGTH_SHORT).show()
         } else {

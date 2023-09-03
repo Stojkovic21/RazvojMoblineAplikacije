@@ -89,10 +89,10 @@
             android:layout_gravity="center|top"
             android:src="@drawable/outline_remove_black_24dp"/>
         <TextView
-            android:id="@+id/tvTitel"
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Titel"
+            android:hint="Title"
             android:layout_gravity="center|top"
             android:layout_marginTop="50dp"
             android:textSize="30dp"/>
