@@ -1,10 +1,12 @@
 package com.example.kulturnispomenici.Activitys
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
-import android.net.Uri
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,7 +21,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.squareup.picasso.Picasso
+import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 
 class UserProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUserProfileBinding
@@ -28,7 +31,7 @@ class UserProfileActivity : AppCompatActivity() {
     private lateinit var txtUsername: TextView
     private lateinit var txtDate: TextView
     private lateinit var progressBar: ProgressBar
-    private lateinit var imageView: ImageView
+    private lateinit var profilePicture: ImageView
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
     private lateinit var txtEmail:TextView
@@ -48,16 +51,16 @@ class UserProfileActivity : AppCompatActivity() {
         txtDate = binding.Date
         progressBar = binding.ProgressBar
         txtEmail=binding.txtEmail
-        imageView=binding.ProfilePicture
+        profilePicture=binding.ProfilePicture
 
         firebaseAuth = FirebaseAuth.getInstance()
         var firebaseUser = firebaseAuth.currentUser
         if (firebaseUser == null) {
-            Toast.makeText(this, "Users details are not wailable", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Users details are not available", Toast.LENGTH_SHORT).show()
         } else {
             progressBar.visibility = View.VISIBLE;
-            showUserProfile(firebaseUser);
-            txtDate.text="aaaaa"
+            Log.d(TAG,"Pre show User")
+            showUserProfile(firebaseUser)
         }
     }
     @SuppressLint("SetTextI18n")
@@ -74,14 +77,17 @@ class UserProfileActivity : AppCompatActivity() {
                 txtDate.text=user?.datumRodjenja.toString()
                 txtName.text=user?.ime.toString()+" "+user?.prezime.toString();
 
-                //val storegeReference=FirebaseStorage.getInstance().reference.child("ProfilePictureStorage/$userId.jpg")
+                val storegeReference= FirebaseStorage.getInstance().reference.child("ProfilePictureStorage/$userId.jpg")
 
-                //val localFile= File.createTempFile()
+                val localFile= File.createTempFile("tempImage","jpg")
 
-                val uri:Uri?=firebaseUser.photoUrl;
+                storegeReference.getFile(localFile).addOnSuccessListener { it->
+                    val bitmap=BitmapFactory.decodeFile(localFile.absolutePath)
+                    profilePicture.setImageBitmap(bitmap)
+                }
 
-
-                Picasso.with(this).load(uri).into(imageView)
+//                val uri:Uri?=firebaseUser.photoUrl;
+//                Picasso.with(this).load(uri).into(imageView)
 
                 progressBar.visibility=View.GONE
 
@@ -101,21 +107,16 @@ class UserProfileActivity : AppCompatActivity() {
         when(item.itemId)
         {
             R.id.EditProfile -> {startActivity(Intent(this,EditProfileActivity::class.java))
-            finish()
             }
             R.id.ChangePassword -> {startActivity(Intent(this,ChangePasswordActivity::class.java))
-            finish()
             }
             R.id.ChangeEmail -> {startActivity(Intent(this,ChangeEmailActivity::class.java))
-            finish()
             }
             R.id.Delete -> {startActivity(Intent(this,DeleteProfileActivity::class.java))
-            finish()
             }
             R.id.SignOut -> {
                 firebaseAuth.signOut()
                 startActivity(Intent(this, LoginActivity::class.java))
-                finish()
             }
         }
         return super.onOptionsItemSelected(item)

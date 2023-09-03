@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:background="@color/purple_700">
+        android:background="@color/PrimaryColor">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -35,14 +35,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="@color/purple_700">
+                android:background="@color/PrimaryColor">
 
                 <ImageView
                     android:id="@+id/UploadProfilePicture"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/no_profile_picture" />
+                    android:src="@drawable/no_profile_picture" />
 
                 <TextView
                     android:id="@+id/txtEditProfilePicture"
@@ -54,7 +54,7 @@
                     android:gravity="center"
                     android:text="@string/edit_profile_picture"
                     android:textColor="@color/linkBlue"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"/>
 
 
             </RelativeLayout>
@@ -63,8 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="15dp"
-                android:padding="15dp"
-                >
+                android:padding="15dp">
 
                 <ImageView
                     android:id="@+id/smallUserImage"
@@ -79,7 +78,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignStart="@id/smallUserImage"
                     android:layout_marginStart="50dp"
-                    android:hint="@string/full_name" />
+                    android:text="@string/full_name"
+                    android:textColor="@color/black"/>
 
                 <EditText
                     android:id="@+id/etName"
@@ -88,7 +88,8 @@
                     android:layout_below="@id/Name"
                     android:layout_marginStart="50dp"
                     android:minHeight="48dp"
-                    android:hint="@string/full_name"/>
+                    android:hint="@string/full_name"
+                    android:textColor="@color/black"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -119,7 +120,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignStart="@id/smallUsernameImage"
                     android:layout_marginStart="50dp"
-                    android:hint="@string/username" />
+                    android:hint="@string/username"
+                    android:textColor="@color/black"/>
 
                 <EditText
                     android:id="@+id/etUsername"
@@ -129,7 +131,8 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginStart="50dp"
                     android:minHeight="48dp"
-                    android:hint="@string/username"/>
+                    android:hint="@string/username"
+                    android:textColor="@color/black"/>
 
             </RelativeLayout>
 
@@ -143,7 +146,7 @@
                     android:id="@+id/smallPhoneImage"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/outline_contact_phone_black_24dp" />
+                    android:background="@drawable/outline_contact_phone_black_24dp"/>
 
 
                 <TextView
@@ -152,7 +155,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignStart="@id/smallPhoneImage"
                     android:layout_marginStart="50dp"
-                    android:hint="@string/phone" />
+                    android:hint="@string/phone"
+                    android:textColor="@color/black"/>
 
                 <EditText
                     android:id="@+id/etPhone"
@@ -162,7 +166,8 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginStart="50dp"
                     android:minHeight="48dp"
-                    android:hint="@string/phone"/>
+                    android:hint="@string/phone"
+                    android:textColor="@color/black"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -185,7 +190,8 @@
                     android:layout_alignStart="@id/smallDateImageee"
                     android:layout_marginStart="50dp"
                     android:focusable="false"
-                    android:hint="@string/dateOfBirth" />
+                    android:hint="@string/dateOfBirth"
+                    android:textColor="@color/black"/>
 
                 <EditText
                     android:id="@+id/etDateOB"
@@ -196,7 +202,8 @@
                     android:layout_marginStart="50dp"
                     android:minHeight="48dp"
                     android:focusable="false"
-                    android:hint="@string/dateOfBirth"/>
+                    android:hint="@string/dateOfBirth"
+                    android:textColor="@color/black"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

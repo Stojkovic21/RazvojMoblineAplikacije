@@ -61,7 +61,7 @@ class DeleteProfileActivity : AppCompatActivity() {
                             progressBar.visibility = View.GONE
                         }else{
                             progressBar.visibility= View.GONE
-                            Toast.makeText(this,"Trenutna lozinka nije dobra", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this,"Uneta lozinka nije korektna", Toast.LENGTH_SHORT).show()
                         }
                     })
             }
@@ -90,6 +90,7 @@ class DeleteProfileActivity : AppCompatActivity() {
                 firebaseAuth.signOut();
                 Toast.makeText(this,"Profil uspesno obrisan",Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this,LoginActivity::class.java))
+                finish()
             }
         })
     }

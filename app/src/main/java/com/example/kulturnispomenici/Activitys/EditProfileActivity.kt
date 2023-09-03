@@ -1,11 +1,18 @@
 package com.example.kulturnispomenici.Activitys
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +22,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.kulturnispomenici.Data.User
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.ActivityEditProfileBinding
@@ -32,6 +41,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
+import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding:ActivityEditProfileBinding
@@ -42,6 +52,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var firebaseUser: FirebaseUser
     private final var PICK_IMAGE_REQUEST=1
     private lateinit var uriImage:Uri
+    private lateinit var bitMap:Bitmap
     private lateinit var etName:EditText;private lateinit var etUsername:EditText;private lateinit var etPhone:EditText;private lateinit var etDateOB:EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +62,7 @@ class EditProfileActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title="Edit profile"
+        supportActionBar?.setDisplayShowHomeEnabled(true);
 
         etName=binding.etName
         etUsername=binding.etUsername
@@ -77,9 +89,14 @@ class EditProfileActivity : AppCompatActivity() {
             },year,month,day).show()
         }
 
-        val uri:Uri? = firebaseUser.photoUrl
+        val storegeReference= FirebaseStorage.getInstance().reference.child("ProfilePictureStorage/${firebaseUser.uid}.jpg")
 
-        Picasso.with(this).load(uri).into(uploadPicture)
+        val localFile= File.createTempFile("tempImage","jpg")
+
+        storegeReference.getFile(localFile).addOnSuccessListener { it->
+            val bitmap= BitmapFactory.decodeFile(localFile.absolutePath)
+            uploadPicture.setImageBitmap(bitmap)
+        }
 
         binding.txtEditProfilePicture.setOnClickListener {view->
             openFileChooser()
@@ -98,48 +115,64 @@ class EditProfileActivity : AppCompatActivity() {
                     etUsername.setText(user.usename)
                     etPhone.setText(user.brTelefona)
                     etDateOB.setText(user.datumRodjenja)
-
                 }
                 progressBar.visibility=View.GONE
-
             }
 
             override fun onCancelled(error: DatabaseError) {
 
             }
         })
-
     }
 
     private fun openFileChooser()
     {
-        var intent:Intent=Intent()
-        intent.setType("image/*")
-        intent.setAction(Intent.ACTION_GET_CONTENT)
-        startActivityForResult(intent,PICK_IMAGE_REQUEST)
+        if(ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        }
+        else{
+            var intent: Intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent,PICK_IMAGE_REQUEST)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode==PICK_IMAGE_REQUEST&&resultCode== RESULT_OK&&data!=null&&data.data !=null){
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             uriImage= data.data!!
-            uploadPicture.setImageURI(uriImage)
+            if(Build.VERSION.SDK_INT>=28){
+                val source= ImageDecoder.createSource(this.contentResolver,uriImage)
+                bitMap= ImageDecoder.decodeBitmap(source)
+                uploadPicture.setImageBitmap(bitMap)
+            }
         }
     }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.edit_profile_manu,menu)
         return super.onCreateOptionsMenu(menu)
     }
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.size>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+            val intent: Intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent,PICK_IMAGE_REQUEST)
+        }
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId)
         {
             R.id.Save->{
+                progressBar.visibility=View.VISIBLE
                 uploadPhoto()
                 if(updateProfile(firebaseUser)) {
                     Toast.makeText(this, "Changes succeed", Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this, UserProfileActivity::class.java));
                 }
+                progressBar.visibility=View.GONE
             }
         }
         return super.onOptionsItemSelected(item)
@@ -197,7 +230,6 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun uploadPhoto() {
-        progressBar.visibility=View.VISIBLE
         storageReference=FirebaseStorage.getInstance().getReference("ProfilePictureStorage")
 
         val fileReference : StorageReference=storageReference.child(firebaseAuth.currentUser?.uid.toString() + "."+getFileExtension(uriImage))
@@ -209,9 +241,8 @@ class EditProfileActivity : AppCompatActivity() {
 
                 val profileUpdates: UserProfileChangeRequest =UserProfileChangeRequest.Builder().setPhotoUri(downloadUri).build()
                 firebaseUser.updateProfile(profileUpdates)
-
             })
-            progressBar.visibility=View.GONE
+
         })
     }
 

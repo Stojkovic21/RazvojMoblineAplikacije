@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.MapFragment">
 
 
@@ -11,11 +12,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:id="@+id/RelLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10sp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20sp">
+
+        <EditText
+            android:id="@+id/etSearchLocation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:textSize="15sp"
+            android:background="@color/white"
+            android:hint="" />
+
+        <ImageView
+            android:id="@+id/imgSearchLocation"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="13dp"
+            android:src="@drawable/outline_search_black_24dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <ImageView
         android:id="@+id/imgProfile"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/outline_account_circle_black_24dp"/>
+        android:background="@drawable/outline_account_circle_black_24dp"
+        android:layout_marginTop="70dp"/>
     <ImageView
         android:id="@+id/imgMyLocation"
         android:layout_width="30dp"
@@ -40,4 +73,44 @@
         android:layout_height="30dp"
         android:background="@drawable/show_all"
         android:layout_below="@id/imgShowList"/>
-</RelativeLayout>
+    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/BottomManu"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/zaobljenje"
+        android:visibility="gone"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:src="@drawable/outline_remove_black_24dp"/>
+        <TextView
+            android:id="@+id/tvTitel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Titel"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="50dp"
+            android:textSize="30dp"/>
+        <TextView
+            android:id="@+id/tvOpis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Opis"
+            android:layout_gravity="top"
+            android:layout_marginTop="130dp"
+            android:textSize="15dp"/>
+        <ImageView
+            android:id="@+id/imgPicture"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/no_profile_picture"/>
+
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

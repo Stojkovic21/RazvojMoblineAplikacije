@@ -42,7 +42,6 @@ class ListaDestinacijaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         myPlaceListView=binding.MyPlacesList
-
         myPlaceListView.adapter=ArrayAdapter<myPlace>(view.context,android.R.layout.simple_list_item_1,myPlacesViewModel.myPlacesList)
 
         myPlaceListView.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->

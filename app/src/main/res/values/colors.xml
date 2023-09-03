@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="strokeColor">#000036</color>
-    <color name="purple_700">#f153db</color>
+    <color name="PrimaryColor">#FFC0CB</color>
     <color name="lightGrat">#d3d3d3</color>
     <color name="linkBlue">#4169e1</color>
     <color name="toolbarElements">#6a4768</color>

@@ -1,7 +1,15 @@
 package com.example.kulturnispomenici.Fragments
 
+import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,8 +18,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentResultListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -20,10 +31,15 @@ import com.example.kulturnispomenici.Data.myPlace
 import com.example.kulturnispomenici.Model.MyPlacesViewModel
 import com.example.kulturnispomenici.R
 import com.example.kulturnispomenici.databinding.FragmentAddNewLocationBinding
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
 import java.util.Date
 
 class AddNewLocationFragment : Fragment() {
@@ -31,17 +47,22 @@ class AddNewLocationFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var btnAddNewLocation: Button
     private lateinit var view: View
+    private lateinit var storageReference: StorageReference
     private lateinit var etTitle:EditText
     private lateinit var etDescriprion:EditText
     private lateinit var etLan:EditText
     private lateinit var etLng:EditText
     private lateinit var btnSet:Button
     private lateinit var btnCansel:Button
+    private lateinit var imgAddPhoto:ImageView
     private lateinit var progressBar: ProgressBar
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var uriImage:Uri
+    private lateinit var bitMap:Bitmap
     private lateinit var newLocationDBReference:DatabaseReference
     private lateinit var addLocation:myPlace
     private lateinit var firebaseUser: FirebaseUser
+    private final var PICK_IMAGE_REQUEST=2
     private val myPlacesViewModel: MyPlacesViewModel by activityViewModels()
     private val onePlaceViewModel:MyPlacesViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +83,9 @@ class AddNewLocationFragment : Fragment() {
         etTitle=view.findViewById(R.id.etTitel)
         etDescriprion=view.findViewById(R.id.etDescription)
         progressBar=view.findViewById(R.id.progressBar)
+        imgAddPhoto=view.findViewById(R.id.imgAddPhoto)
+        uriImage= Uri.EMPTY
+        //bitMap=
 
         btnSet.setOnClickListener{ // uzimanje koordinata iz map fragmenta
             parentFragmentManager.setFragmentResultListener("lanLng",this, FragmentResultListener { requestKey: String, bundle: Bundle ->
@@ -84,6 +108,7 @@ class AddNewLocationFragment : Fragment() {
                 val date = getTodayDate()
                 val userKey = newLocationDBReference.push().key
                 var username: String = ""
+                uploadPhoto(userKey.toString())
                 val databaseReference =FirebaseDatabase.getInstance().getReference("Registrovan korisnik"); //Uzima username iz baze
                 databaseReference.child(firebaseUser.uid).get().addOnSuccessListener {
 
@@ -100,7 +125,8 @@ class AddNewLocationFragment : Fragment() {
                             username,
                             etLan.text.toString().toDouble(),
                             etLng.text.toString().toDouble(),
-                            getTodayDate()
+                            getTodayDate(),
+                            userKey.toString()+".jpg"
                         )
                         myPlacesViewModel.addPlace(myPlace())
 
@@ -118,9 +144,29 @@ class AddNewLocationFragment : Fragment() {
                             }
                     }
                 }
+                //dodavanje u storage
             }
         }
+        imgAddPhoto.setOnClickListener {
+            openFileChooser()
+        }
         return view
+    }
+    private fun uploadPhoto(pictureName:String) {
+        storageReference= FirebaseStorage.getInstance().getReference("SlikeSpomenika")
+
+        val fileReference : StorageReference =storageReference.child(pictureName + ".jpg")
+
+        fileReference.putFile(uriImage).addOnSuccessListener(OnSuccessListener<UploadTask.TaskSnapshot> {
+            fileReference.downloadUrl.addOnSuccessListener(OnSuccessListener<Uri>{
+                val downloadUri:Uri=uriImage
+                firebaseUser= firebaseAuth.currentUser!!
+
+                val profileUpdates: UserProfileChangeRequest =
+                    UserProfileChangeRequest.Builder().setPhotoUri(downloadUri).build()
+                firebaseUser.updateProfile(profileUpdates)
+            })
+        })
     }
     private fun isEditTextEmpty(): Boolean {
         var bul:Boolean=false
@@ -150,8 +196,41 @@ class AddNewLocationFragment : Fragment() {
         }
         return bul
     }
-
+    private fun openFileChooser()
+    {
+        if(ContextCompat.checkSelfPermission(requireContext(),android.Manifest.permission.READ_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        }
+        else{
+            var intent: Intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent,PICK_IMAGE_REQUEST)
+        }
+    }
     private fun getTodayDate(): Date {
         return Date()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(grantResults.size>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            val intent: Intent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent,PICK_IMAGE_REQUEST)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            uriImage= data.data!!
+            if(Build.VERSION.SDK_INT>=28){
+                val source=ImageDecoder.createSource(requireActivity().contentResolver,uriImage)
+                bitMap=ImageDecoder.decodeBitmap(source)
+                imgAddPhoto.setImageBitmap(bitMap)
+            }
+        }
     }
 }
