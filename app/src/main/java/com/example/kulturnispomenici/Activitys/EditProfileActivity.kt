@@ -165,9 +165,13 @@ class EditProfileActivity : AppCompatActivity() {
                 bitMap= ImageDecoder.decodeBitmap(source)
                 uploadPicture.setImageBitmap(bitMap)
             }
-        }else if (requestCode==CAMERA_REQUEST_CODE&&resultCode==Activity.RESULT_OK){
-            val CbitMap:Bitmap= data?.extras?.get("data") as Bitmap
-            uploadPicture.setImageBitmap(CbitMap)
+        }else if (requestCode==CAMERA_REQUEST_CODE&&resultCode==Activity.RESULT_OK &&data != null){
+                uriImage= data.data!!
+            if(Build.VERSION.SDK_INT>=28){
+                val source= ImageDecoder.createSource(this.contentResolver,uriImage)
+                bitMap= ImageDecoder.decodeBitmap(source)
+                uploadPicture.setImageBitmap(bitMap)
+            }
         }else{
             Toast.makeText(this,"Something gone wrong",Toast.LENGTH_SHORT).show()
         }

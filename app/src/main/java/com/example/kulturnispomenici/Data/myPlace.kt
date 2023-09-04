@@ -59,7 +59,7 @@ data class myPlace(
                 }
         }
                     bottomManu.visibility=View.VISIBLE
-                map.controller.setZoom(15.0)
+                map.controller.setZoom(18.0)
                 map.controller.setCenter(GeoPoint(latitude,longitude));
                 return true
             }

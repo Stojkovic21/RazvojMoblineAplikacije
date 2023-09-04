@@ -57,7 +57,7 @@ class MapFragment : Fragment() {
     private lateinit var currentLocation:Location
     private final var haveLocationPermissin:Boolean=false
     private final var LOCATION_PERMISSION_REQUEST_CODE=69
-    private final var DEFAULT_ZOOM:Double=20.0
+    private final var DEFAULT_ZOOM:Double=18.0
     private val myPlacesViewModel: MyPlacesViewModel by activityViewModels()
     private val onePlaceViewModel:MyPlacesViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -181,7 +181,7 @@ class MapFragment : Fragment() {
         }
 
         BottomSheetBehavior.from(bottomManu).apply {
-            peekHeight=100
+            peekHeight=150
             this.state=BottomSheetBehavior.STATE_COLLAPSED
         }
 
@@ -211,6 +211,7 @@ class MapFragment : Fragment() {
         super.onPause()
         map.onPause()
     }
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun getGPSLocation(){
 
         Log.d(TAG,"Start getGPs")
@@ -223,9 +224,11 @@ class MapFragment : Fragment() {
                 currentLocation=location
                 latLng= LatLng(currentLocation.latitude,currentLocation.longitude)
                     //Log.d(TAG,"End startLocation")
+                    val markerIcon=resources.getDrawable(R.drawable.location_pin)
                     val curLocarion:GeoPoint= GeoPoint(currentLocation.latitude,currentLocation.longitude)
                     val marker:Marker=Marker(map)
                     marker.position=curLocarion
+                    marker.icon=markerIcon
                     marker.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM)
                     map.overlays.add(marker)
             })
